@@ -1,5 +1,7 @@
 use clap::{Parser, Subcommand};
 
+use crate::utils::log::init_logger;
+
 mod cmd;
 mod utils;
 
@@ -27,9 +29,7 @@ enum Commands {
 }
 
 fn main() {
-    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
-        .format_timestamp(None)
-        .init();
+    init_logger();
 
     let cli = Cli::parse();
     let result = match cli.command {
