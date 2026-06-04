@@ -24,8 +24,10 @@ pub fn read_keys() -> Result<Keys> {
         {
             private_key = Some(v.to_string());
         } else if let Some(v) = line
-            .strip_prefix("Password: ")
+            .strip_prefix("Password (PublicKey): ")
+            .or_else(|| line.strip_prefix("Password: "))
             .or_else(|| line.strip_prefix("Public key: "))
+            .or_else(|| line.strip_prefix("PublicKey: "))
         {
             public_key = Some(v.to_string());
         } else if let Some(v) = line.strip_prefix("shortsid: ") {
