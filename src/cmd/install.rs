@@ -15,8 +15,8 @@ pub fn run() -> Result<()> {
     std::thread::sleep(std::time::Duration::from_secs(3));
 
     // Install system dependencies
-    run_cmd("apt", &["update"])?;
-    run_cmd("apt", &["install", "-y", "qrencode", "curl", "jq"])?;
+    run_cmd("apt-get", &["update"])?;
+    run_cmd("apt-get", &["install", "-y", "qrencode", "curl", "jq"])?;
 
     // Enable BBR congestion control
     enable_bbr()?;
@@ -86,13 +86,13 @@ fn enable_bbr() -> Result<()> {
     if already_bbr {
         log::info!("BBR already enabled");
     } else {
-        let mut f = fs::OpenOptions::new()
-            .append(true)
-            .open("/etc/sysctl.conf")
-            .context("Failed to open /etc/sysctl.conf")?;
+        let sysctl_drop_in = "/etc/sysctl.d/99-bbr.conf";
+        fs::create_dir_all("/etc/sysctl.d")?;
+        let mut f = fs::File::create(sysctl_drop_in)
+            .context("Failed to create /etc/sysctl.d/99-bbr.conf")?;
         writeln!(f, "net.core.default_qdisc=fq")?;
         writeln!(f, "net.ipv4.tcp_congestion_control=bbr")?;
-        run_cmd("sysctl", &["-p"])?;
+        run_cmd("sysctl", &["--system"])?;
         log::info!("BBR enabled");
     }
     Ok(())

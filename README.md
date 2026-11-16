@@ -16,8 +16,8 @@ The following tools are installed automatically by `xrayctl install`:
 
 Installs and configures Xray-core from scratch:
 
-1. Runs `apt update` and installs `qrencode`, `curl`, `jq`
-2. Enables BBR congestion control (writes to `/etc/sysctl.conf` if not already active)
+1. Runs `apt-get update` and installs `qrencode`, `curl`, `jq`
+2. Enables BBR congestion control (writes to `/etc/sysctl.d/99-bbr.conf` if not already active)
 3. Downloads and runs the [official Xray install script](https://github.com/XTLS/Xray-install)
 4. Generates credentials — UUID, x25519 key pair, short ID — and saves them to `/usr/local/etc/xray/.keys`
 5. Writes `/usr/local/etc/xray/config.json` (VLESS inbound on port 443, Reality security, `github.com` as SNI destination)
